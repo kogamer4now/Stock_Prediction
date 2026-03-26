@@ -66,7 +66,7 @@ DEFAULT_VAL = df_prices.iloc[:, 0].mean()
 
 MODEL_INFO = {
         "endpoint": aws_endpoint_bitcoin,
-        "explainer": 'explainer_bitcoin.shap',
+        "explainer": 'explainer_pca.shap',
         "pipeline": 'finalized_bitcoin_model.tar.gz',
         "keys": ["Close Price"],
         "inputs": [{"name": "Close Price", "type": "number", "min": MIN_VAL, "max": MAX_VAL, "default": DEFAULT_VAL, "step": 100.0}]
