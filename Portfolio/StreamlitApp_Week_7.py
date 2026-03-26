@@ -84,8 +84,8 @@ def load_shap_explainer(_session, bucket, key, local_path):
     local_path = local_path
 
     # Only download if it doesn't exist locally to save time
-    if not os.path.exists(local_path):
-        s3_client.download_file(Filename=local_path, Bucket=bucket, Key=key)
+    #if not os.path.exists(local_path):
+    s3_client.download_file(Filename=local_path, Bucket=bucket, Key=key)
         
     with open(local_path, "rb") as f:
         return shap.Explainer.load(f)
@@ -117,7 +117,7 @@ def display_explanation(input_df, session, aws_bucket):
     best_pipeline = load_pipeline(session, aws_bucket, 'sklearn-pipeline-deployment')
     preprocessing_pipeline = Pipeline(steps=best_pipeline.steps[:-1])
     input_df_transformed = preprocessing_pipeline.transform(input_df)
-    feature_names = best_pipeline[1:4].get_feature_names_out()
+    feature_names = best_pipeline[1:5].get_feature_names_out()
     input_df_transformed = pd.DataFrame(input_df_transformed, columns=feature_names)
     shap_values = explainer(input_df_transformed)
 
