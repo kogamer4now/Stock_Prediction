@@ -128,7 +128,17 @@ def display_explanation(user_inputs, session, aws_bucket):
     )
 
     # Reconstruct the feature row the same way input_fn does on the endpoint
-    dataset = pd.read_csv(r'./SP500Data.csv', index_col=0)
+    # SP500Data.csv lives in S3 (bundled in the model tar.gz under sklearn-pipeline-deployment)
+    # Download it to a temp path so Streamlit Cloud can access it
+    s3_client = session.client('s3')
+    csv_local_path = os.path.join(tempfile.gettempdir(), 'SP500Data.csv')
+    if not os.path.exists(csv_local_path):
+        s3_client.download_file(
+            Bucket=aws_bucket,
+            Key='sklearn-pipeline-deployment/SP500Data.csv',
+            Filename=csv_local_path
+        )
+    dataset = pd.read_csv(csv_local_path, index_col=0)
 
     ibm_price    = float(user_inputs['IBM'])
     closest_date = (dataset['IBM'] - ibm_price).abs().idxmin()
