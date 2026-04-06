@@ -53,8 +53,8 @@ MODEL_INFO = {
     "endpoint": aws_endpoint,
     "explainer": 'explainer_pca.shap',
     "pipeline":  'finalized_pca_model.tar.gz',
-    "keys":   ["IBM"],
-    "inputs": [{"name": k, "type": "number", "min": 0.0, "default": 100.0, "step": 10.0} for k in ["IBM"]]
+    "keys":   ["NOC"],
+    "inputs": [{"name": k, "type": "number", "min": 0.0, "default": 100.0, "step": 10.0} for k in ["NOC"]]
 }
 
 TAR_LOCAL_PATH = os.path.join(tempfile.gettempdir(), 'finalized_pca_model.tar.gz')
@@ -132,8 +132,8 @@ def display_explanation(user_inputs, session, aws_bucket):
     # SP500Data.csv is bundled inside the tar.gz — extract it from there
     dataset = load_csv_from_tar(session, aws_bucket)
 
-    ibm_price    = float(user_inputs['IBM'])
-    closest_date = (dataset['IBM'] - ibm_price).abs().idxmin()
+    ibm_price    = float(user_inputs['NOC'])
+    closest_date = (dataset['NOC'] - ibm_price).abs().idxmin()
 
     return_period = 5
     X = np.log(dataset.drop(['NOC'], axis=1)).diff(return_period)
