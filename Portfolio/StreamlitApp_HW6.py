@@ -63,8 +63,8 @@ MODEL_INFO = {
         "endpoint": aws_endpoint,
         "explainer": 'explainer_sentiment.shap',
         "pipeline": 'finalized_sentiment_model.tar.gz',
-        "keys": ['ADBE','MSFT','JPM','sentiment_textblob'],
-        "inputs": [{"name": k, "type": "number", "min": -1.0, "max": 1.0, "default": 0.0, "step": 0.01} for k in ['ADBE','MSFT','JPM','sentiment_textblob']]
+        "keys": ['ADBE','AMZN','WMT','PredictedSentiment'],
+        "inputs": [{"name": k, "type": "number", "min": -1.0, "max": 1.0, "default": 0.0, "step": 0.01} for k in ['ADBE','AMZN','WMT','PredictedSentiment']]
 }
 
 def load_pipeline(_session, bucket, key):
@@ -136,7 +136,9 @@ def display_explanation(input_df, session, aws_bucket):
     shap.plots.waterfall(shap_values[0, :, 0])
     st.pyplot(fig)
     # top feature 
+    #REGRESSION
     # top_feature = pd.Series(shap_values[0].values, index=shap_values[0].feature_names).abs().idxmax()
+    #CLASSIFICATION
     top_feature = pd.Series(shap_values[0, :, 0].values, index=shap_values[0, :, 0].feature_names).abs().idxmax()
     st.info(f"**Business Insight:** The most influential factor in this decision was **{top_feature}**.")
 
