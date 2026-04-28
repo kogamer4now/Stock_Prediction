@@ -122,11 +122,11 @@ def call_model_api(input_df):
 # Local Explainability
 def display_explanation(input_df, session, aws_bucket):
     explainer_name = MODEL_INFO["explainer"]
-    explainer      = load_shap_explainer(
-        session, aws_bucket,
-        posixpath.join('explainer', explainer_name),
-        os.path.join(tempfile.gettempdir(), explainer_name)
-    )
+    explainer = load_shap_explainer(
+    session, aws_bucket,
+    'loan-default-model/shap_explainer.joblib',  # <-- correct S3 path
+    os.path.join(tempfile.gettempdir(), explainer_name)
+)
 
     best_pipeline         = load_pipeline(session, aws_bucket, 'loan-default-model')
     preprocessing_pipeline = Pipeline(steps=best_pipeline.steps[:-2])
