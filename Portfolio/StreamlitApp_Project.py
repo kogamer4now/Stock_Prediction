@@ -173,8 +173,14 @@ with st.form("pred_form"):
 
     submitted = st.form_submit_button("Run Prediction")
 
+# Get the exact 25 features the model was trained on
+expected_features = list(dataset.columns)
 original = {k: float(v) for k, v in dataset.iloc[0:1].to_dict(orient='records')[0].items()}
-original.update({k: float(v) for k, v in user_inputs.items()})
+
+# Update with user inputs but only for features that exist in training data
+for k, v in user_inputs.items():
+    if k in original:
+        original[k] = float(v)
 
 if submitted:
     res, status = call_model_api(original)
