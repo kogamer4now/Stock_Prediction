@@ -113,22 +113,20 @@ def display_explanation(input_df, session, aws_bucket):
 
     st.subheader("Decision Transparency (SHAP)")
 
-# Use waterfall plot instead of force plot — renders better in Streamlit
-import shap
-shap_exp = shap.Explanation(
-    values=shap_values[0],
-    base_values=explainer.expected_value,
-    data=input_row.iloc[0].values,
-    feature_names=expected_features
-)
+    shap_exp = shap.Explanation(
+        values=shap_values[0],
+        base_values=explainer.expected_value,
+        data=input_row.iloc[0].values,
+        feature_names=expected_features
+    )
 
-fig, ax = plt.subplots(figsize=(10, 6))
-shap.plots.waterfall(shap_exp, show=False)
-plt.tight_layout()
-st.pyplot(fig)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    shap.plots.waterfall(shap_exp, show=False)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-top_feature = pd.Series(shap_values[0], index=expected_features).abs().idxmax()
-st.info(f"**Business Insight:** The most influential factor in this decision was **{top_feature}**.")
+    top_feature = pd.Series(shap_values[0], index=expected_features).abs().idxmax()
+    st.info(f"**Business Insight:** The most influential factor in this decision was **{top_feature}**.")
 
 # Streamlit UI
 st.set_page_config(page_title="Loan Default Prediction", layout="wide")
