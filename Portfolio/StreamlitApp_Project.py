@@ -123,10 +123,34 @@ def call_model_api(input_df):
 def display_explanation(input_df, session, aws_bucket):
     explainer_name = MODEL_INFO["explainer"]
     explainer = load_shap_explainer(
-    session, aws_bucket,
-    'loan-default-model/shap_explainer.joblib',  # <-- correct S3 path
-    os.path.join(tempfile.gettempdir(), explainer_name)
-)
+        session, aws_bucket,
+        'loan-default-model/shap_explainer.joblib',
+        os.path.join(tempfile.gettempdir(), explainer_name)
+    )
+
+    input_df = pd.DataFrame([input_df])
+    # Keep only the expected features in the right order
+    expected_features = list(dataset.columns)
+    input_df = input_df[expected_features].astype(float)
+
+    shap_values = explainer.shap_values(input_df)
+
+    st.subheader("Decision Transparency (SHAP)")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    shap.force_plot(
+        explainer.expected_value,
+        shap_values[0],
+        input_df.iloc[0],
+        matplotlib=True,
+        show=False
+    )
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    top_feature = pd.Series(
+        shap_values[0], index=expected_features
+    ).abs().idxmax()
+    st.info(f"**Business Insight:** The most influential factor in this decision was **{top_feature}**.")
 
     best_pipeline         = load_pipeline(session, aws_bucket, 'loan-default-model')
     preprocessing_pipeline = Pipeline(steps=best_pipeline.steps[:-2])
