@@ -107,7 +107,7 @@ def call_model_api(input_df):
         endpoint_name=MODEL_INFO["endpoint"],
         sagemaker_session=sm_session,
         serializer=JSONSerializer(),
-        deserializer=NumpyDeserializer()
+        deserializer=JSONDeserializer()
     )
 
     try:
